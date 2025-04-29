@@ -1,20 +1,22 @@
 #include <ESP32Servo.h>
 
+// replace end servos for joystick pins for now
+
 ////////////////////////////////////
 ////// SETUP FRONT FLIPPERS ////////
 Servo R_roll_servo; // object representing actual servo
 Servo R_yaw_servo;
-Servo R_pitch_servo;
+// Servo R_pitch_servo;
 const int R_ROLL_PIN = 33; // base servo, connected to body
 const int R_YAW_PIN = 27; // middle servo
-const int R_PITCH_PIN = 12; // end servo, connected to flipper
+// const int R_PITCH_PIN = 12; // end servo, connected to flipper
 
 Servo L_roll_servo;
 Servo L_yaw_servo;
-Servo L_pitch_servo;
+// Servo L_pitch_servo;
 const int L_ROLL_PIN = 14; // base servo, connected to body
 const int L_YAW_PIN = 32; // middle servo
-const int L_PITCH_PIN = 15; // end servo, connected to flipper
+// const int L_PITCH_PIN = 15; // end servo, connected to flipper
 
 const int steps = 200;
 const float pi = 3.14159;
@@ -47,10 +49,10 @@ Servo bL_rollServo;
 
 ////////////////////////////////////
 ////// SETUP JOYSTICK //////////////
-const int xPin = 33; 
-const int yPin = 14; 
+const int xPin = 12; 
+const int yPin = 15; 
 
-const int buttonPin = 32; 
+const int buttonPin = 37; 
 
 const int deadZone = 100;  // joystick values within this range from middle will be ignored
 
@@ -86,11 +88,11 @@ void setup() {
   // front flippers
   R_roll_servo.attach(R_ROLL_PIN);
   R_yaw_servo.attach(R_YAW_PIN);
-  R_pitch_servo.attach(R_PITCH_PIN);
+  // R_pitch_servo.attach(R_PITCH_PIN);
 
   L_roll_servo.attach(L_ROLL_PIN);
   L_yaw_servo.attach(L_YAW_PIN);
-  L_pitch_servo.attach(L_PITCH_PIN);
+  // L_pitch_servo.attach(L_PITCH_PIN);
 
   generatePath(); // Generate the path for the servos
 
@@ -235,6 +237,11 @@ void handleFrontFlipperMovement() {
     // counterclockwise looking from the left side
     L_roll_servo.write(pitchAngles[left_i]); // physically is pitch but on mine is roll, BASE SERVO
     L_yaw_servo.write(yawAngles[left_i]); // MIDDLE SERVO
+
+    // clockwise looking from the right side
+    right_i--;
+    R_roll_servo.write(pitchAngles[right_i]); // physically is pitch but on mine is roll, BASE SERVO
+    R_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
 
     float easingFactor = sin(left_i * PI / steps); // 0 at start/end, 1 at middle
     int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay
