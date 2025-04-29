@@ -1,0 +1,191 @@
+clear all
+%constants for wing tip
+
+a0x =       117.1;  %Coefficients (with 95% confidence bounds) (116.9, 117.4)
+a1x =      -182.9;  %Coefficients (with 95% confidence bounds) (-183.3, -182.6)
+b1x =       42.63;  %Coefficients (with 95% confidence bounds) (42.04, 43.23)
+a2x =       -13.3; %Coefficients (with 95% confidence bounds) (-13.72, -12.88)
+b2x =      -54.58;  %Coefficients (with 95% confidence bounds) (-54.93, -54.23)
+a3x =       17.38;  %Coefficients (with 95% confidence bounds) (17.04, 17.73)
+b3x =       -8.86;  %Coefficients (with 95% confidence bounds) (-9.22, -8.5)
+a4x =      -5.189;  %Coefficients (with 95% confidence bounds) (-5.53, -4.848)
+b4x =       1.512;  %Coefficients (with 95% confidence bounds) (1.158, 1.867)
+a5x =      -2.687;  %Coefficients (with 95% confidence bounds) (-3.029, -2.345)
+b5x =      -2.955;  %Coefficients (with 95% confidence bounds) (-3.302, -2.607)
+a6x =       2.653;  %Coefficients (with 95% confidence bounds) (2.31, 2.996)
+b6x =      -2.801;  %Coefficients (with 95% confidence bounds) 3.146, -2.455)
+a7x =     -0.3433;  %Coefficients (with 95% confidence bounds) (-0.6859, -0.0006559)
+b7x =       -1.62;  %Coefficients (with 95% confidence bounds) (-1.965, -1.275)
+a8x =    -0.08304;  %Coefficients (with 95% confidence bounds) (-0.425, 0.2589)
+b8x =      -1.225; %Coefficients (with 95% confidence bounds)  (-1.57, -0.8805)
+wx =       1.496;  %Coefficients (with 95% confidence bounds) (1.495, 1.497)
+
+ a0y =         303;%Coefficients (with 95% confidence bounds)  (302.6, 303.3)
+ a1y =       219.6;%Coefficients (with 95% confidence bounds)  (219.1, 220.1)
+ b1y =      -164.3; %Coefficients (with 95% confidence bounds)(-165, -163.7)
+ a2y =       84.45; %Coefficients (with 95% confidence bounds) (83.9, 85)
+ b2y =      -65.54; %Coefficients (with 95% confidence bounds) (-66.06, -65.02)
+ a3y =       26.33; %Coefficients (with 95% confidence bounds) (25.82, 26.83)
+ b3y =       45.71; %Coefficients (with 95% confidence bounds) (45.25, 46.17)
+ a4y =      -11.23; %Coefficients (with 95% confidence bounds)(-11.7, -10.76)
+ b4y =       20.05; %Coefficients (with 95% confidence bounds) (19.58, 20.51)
+ a5y =     -0.5956;  %Coefficients (with 95% confidence bounds)(-1.049, -0.1426)
+ b5y =      -2.631;  %Coefficients (with 95% confidence bounds)(-3.086, -2.177)
+ a6y =      -2.667;  %Coefficients (with 95% confidence bounds)(-3.118, -2.217)
+ b6y =      0.6726;  %Coefficients (with 95% confidence bounds)(0.2169, 1.128)
+ a7y =       0.678; %Coefficients (with 95% confidence bounds) (0.2276, 1.128)
+ b7y =     -0.7038; %Coefficients (with 95% confidence bounds) (-1.158, -0.2495)
+ a8y =       2.542; %Coefficients (with 95% confidence bounds) (2.091, 2.993)
+ b8y =     -0.9941; %Coefficients (with 95% confidence bounds) (-1.45, -0.5381)
+ wy =       1.496; %Coefficients (with 95% confidence bounds) (1.495, 1.497)
+
+a0z =       262.7; %Coefficients (with 95% confidence bounds) (262.2, 263.2)
+a1z =       11.65; %Coefficients (with 95% confidence bounds) (10.84, 12.46)
+b1z =      -63.16; %Coefficients (with 95% confidence bounds) (-63.81, -62.51)
+a2z =      -33.56; %Coefficients (with 95% confidence bounds) (-34.47, -32.65)
+b2z =       82.36; %Coefficients (with 95% confidence bounds) (81.6, 83.12)
+a3z =      -38.04;  %Coefficients (with 95% confidence bounds)(-38.75, -37.33)
+b3z =        23.7;  %Coefficients (with 95% confidence bounds)(22.93, 24.46)
+a4z =      -14.84;  %Coefficients (with 95% confidence bounds)(-15.5, -14.19)
+b4z =      -8.802;  %Coefficients (with 95% confidence bounds)(-9.464, -8.14)
+a5z =      -7.894; %Coefficients (with 95% confidence bounds) (-8.537, -7.251)
+b5z =       -4.65; %Coefficients (with 95% confidence bounds) (-5.307, -3.993)
+a6z =      -6.884; %Coefficients (with 95% confidence bounds) (-7.532, -6.236)
+b6z =      -6.088; %Coefficients (with 95% confidence bounds) (-6.757, -5.419)
+a7z =       2.615; %Coefficients (with 95% confidence bounds)(1.972, 3.258)
+b7z =      -3.547; %Coefficients (with 95% confidence bounds) (-4.197, -2.897)
+a8z =      -1.716;  %Coefficients (with 95% confidence bounds)(-2.362, -1.069)
+b8z =       1.293; %Coefficients (with 95% confidence bounds) (0.6416, 1.945)
+wz =       1.496; %Coefficients (with 95% confidence bounds) (1.495, 1.497)
+
+%constants for elbow
+a0xe =       54.06; %Coefficients (with 95% confidence bounds) (53.98, 54.14)
+a1xe =      -5.371; %Coefficients (with 95% confidence bounds) (-5.497, -5.246)
+b1xe =      -2.415;  %Coefficients (with 95% confidence bounds)(-2.539, -2.29)
+a2xe =      -3.954;  %Coefficients (with 95% confidence bounds)(-4.108, -3.8)
+b2xe =       -4.81; %Coefficients (with 95% confidence bounds) (-4.951, -4.67)
+a3xe =       -0.15; %Coefficients (with 95% confidence bounds) (-0.3219, 0.02195)
+b3xe =      -4.306; %Coefficients (with 95% confidence bounds) (-4.428, -4.183)
+a4xe =     -0.3527; %Coefficients (with 95% confidence bounds) (-0.4713, -0.2341)
+b4xe =      0.5996;%Coefficients (with 95% confidence bounds)(0.4677, 0.7315)
+a5xe =     -0.3945; %Coefficients (with 95% confidence bounds) (-0.5205, -0.2685)
+b5xe =      0.8514; %Coefficients (with 95% confidence bounds) (0.7257, 0.9772)
+a6xe =       0.203; %Coefficients (with 95% confidence bounds)(0.06776, 0.3383)
+b6xe =       1.067; %Coefficients (with 95% confidence bounds) (0.9507, 1.184)
+a7xe =     -0.2762; %Coefficients (with 95% confidence bounds) (-0.3959, -0.1564)
+b7xe =      0.4133; %Coefficients (with 95% confidence bounds) (0.2967, 0.5299)
+a8xe =   0.0009741; %Coefficients (with 95% confidence bounds) (-0.1218, 0.1238)
+b8xe =      -0.565; %Coefficients (with 95% confidence bounds) (-0.6814, -0.4487)
+wxe =       1.496; %Coefficients (with 95% confidence bounds) (1.493, 1.498)
+
+a0ye =       318.1; %Coefficients (with 95% confidence bounds) (318, 318.2)
+a1ye =       30.55; %Coefficients (with 95% confidence bounds)(30.36, 30.74)
+b1ye =      -44.92; %Coefficients (with 95% confidence bounds) (-45.08, -44.76)
+a2ye =       10.14; %Coefficients (with 95% confidence bounds) (10.01, 10.27)
+b2ye =      -5.333; %Coefficients (with 95% confidence bounds) (-5.458, -5.208)
+a3ye =       1.414; %Coefficients (with 95% confidence bounds) (1.293, 1.534)
+b3ye =       2.968;  %Coefficients (with 95% confidence bounds)(2.847, 3.09)
+a4ye =     -0.2397;  %Coefficients (with 95% confidence bounds)(-0.3597, -0.1196)
+b4ye =        1.66;  %Coefficients (with 95% confidence bounds)(1.538, 1.782)
+a5ye =      -0.499;  %Coefficients (with 95% confidence bounds)(-0.6186, -0.3795)
+b5ye =      0.7714; %Coefficients (with 95% confidence bounds) (0.6502, 0.8926)
+a6ye =      -1.155;  %Coefficients (with 95% confidence bounds)(-1.274, -1.035)
+b6ye =    -0.02553;  %Coefficients (with 95% confidence bounds)(-0.1491, 0.09802)
+a7ye =      0.2741; %Coefficients (with 95% confidence bounds)(0.1543, 0.394)
+b7ye =     -0.5696;  %Coefficients (with 95% confidence bounds)(-0.69, -0.4492)
+a8ye =      0.3139;  %Coefficients (with 95% confidence bounds)(0.1945, 0.4334)
+b8ye =     -0.1613; %Coefficients (with 95% confidence bounds) (-0.2817, -0.04093)
+wye =       1.496;  %Coefficients (with 95% confidence bounds)(1.495, 1.497)
+
+a0ze =       83.11;%Coefficients (with 95% confidence bounds)  (83.03, 83.19)
+a1ze =      -17.35;%Coefficients (with 95% confidence bounds)  (-17.46, -17.24)
+b1ze =       7.056;%Coefficients (with 95% confidence bounds)  (6.894, 7.217)
+a2ze =     -0.8165; %Coefficients (with 95% confidence bounds)(-0.9859, -0.6471)
+b2ze =       9.892; %Coefficients (with 95% confidence bounds) (9.787, 9.997)
+a3ze =     0.05326; %Coefficients (with 95% confidence bounds) (-0.0635, 0.17)
+b3ze =       2.799;%Coefficients (with 95% confidence bounds) (2.691, 2.908)
+a4ze =     -0.8515;%Coefficients (with 95% confidence bounds) (-0.9561, -0.7468)
+b4ze =      0.5612;%Coefficients (with 95% confidence bounds) (0.4565, 0.6659)
+a5ze =     -0.4952; %Coefficients (with 95% confidence bounds) (-0.5999, -0.3906)
+b5ze =      0.3133;%Coefficients (with 95% confidence bounds) (0.2086, 0.418)
+a6ze =     -0.1586; %Coefficients (with 95% confidence bounds) (-0.264, -0.05326)
+b6ze =      0.3581; %Coefficients (with 95% confidence bounds) (0.2529, 0.4633)
+a7ze =     -0.1013; %Coefficients (with 95% confidence bounds) (-0.2051, 0.002457)
+b7ze =    -0.05005; %Coefficients (with 95% confidence bounds) (-0.1552, 0.05508)
+a8ze =        0.13; %Coefficients (with 95% confidence bounds) (0.02614, 0.2339)
+b8ze =     0.03394; %Coefficients (with 95% confidence bounds) (-0.07221, 0.1401)
+wze =       1.495; %Coefficients (with 95% confidence bounds) (1.494, 1.497)
+
+%function only defined for time = 0 to 8.4 seconds
+time=4.2;
+fidelity=1e3;
+t=linspace(0,time,fidelity)';
+
+%flipper tip eqautions of motion
+% xt =  a0x + a1x*cos(t*wx) + b1x*sin(t*wx) + a2x*cos(2*t*wx) + b2x*sin(2*t*wx) + a3x*cos(3*t*wx) + b3x*sin(3*t*wx) + a4x*cos(4*t*wx) + b4x*sin(4*t*wx) + a5x*cos(5*t*wx) + b5x*sin(5*t*wx) + a6x*cos(6*t*wx) + b6x*sin(6*t*wx) + a7x*cos(7*t*wx) + b7x*sin(7*t*wx) + a8x*cos(8*t*wx) + b8x*sin(8*t*wx);
+% yt =  a0y + a1y*cos(t*wy) + b1y*sin(t*wy) + a2y*cos(2*t*wy) + b2y*sin(2*t*wy) + a3y*cos(3*t*wy) + b3y*sin(3*t*wy) + a4y*cos(4*t*wy) + b4y*sin(4*t*wy) + a5y*cos(5*t*wy) + b5y*sin(5*t*wy) + a6y*cos(6*t*wy) + b6y*sin(6*t*wy) + a7y*cos(7*t*wy) + b7y*sin(7*t*wy) + a8y*cos(8*t*wy) + b8y*sin(8*t*wy);
+% zt =  a0z + a1z*cos(t*wz) + b1z*sin(t*wz) + a2z*cos(2*t*wz) + b2z*sin(2*t*wz) + a3z*cos(3*t*wz) + b3z*sin(3*t*wz) + a4z*cos(4*t*wz) + b4z*sin(4*t*wz) + a5z*cos(5*t*wz) + b5z*sin(5*t*wz) + a6z*cos(6*t*wz) + b6z*sin(6*t*wz) + a7z*cos(7*t*wz) + b7z*sin(7*t*wz) + a8z*cos(8*t*wz) + b8z*sin(8*t*wz);
+%%% FOR SOLIDWORKS, subsitute in coefficients to display with equation driven curve
+xt =  117.1 - 182.9*cos(t*1.496) + 42.63*sin(t*1.496) - 13.3*cos(2*t*1.496) - 54.58*sin(2*t*1.496) + 17.38*cos(3*t*1.496) - 8.86*sin(3*t*1.496) - 5.189*cos(4*t*1.496) + 1.512*sin(4*t*1.496) - 2.687*cos(5*t*1.496) - 2.955*sin(5*t*1.496) + 2.653*cos(6*t*1.496) - 2.801*sin(6*t*1.496) - 0.3433*cos(7*t*1.496) - 1.62*sin(7*t*1.496) - 0.08304*cos(8*t*1.496) - 1.225*sin(8*t*1.496);
+yt =  303 + 219.6*cos(t*1.496) - 164.3*sin(t*1.496) + 84.45*cos(2*t*1.496) - 65.54*sin(2*t*1.496) + 26.33*cos(3*t*1.496) + 45.71*sin(3*t*1.496) - 11.23*cos(4*t*1.496) + 20.05*sin(4*t*1.496) - 0.5956*cos(5*t*1.496) - 2.631*sin(5*t*1.496) - 2.667*cos(6*t*1.496) + 0.6726*sin(6*t*1.496) + 0.678*cos(7*t*1.496) - 0.7038*sin(7*t*1.496) + 2.542*cos(8*t*1.496) - 0.9941*sin(8*t*1.496);
+zt =  262.7 + 11.65*cos(t*1.496) - 63.16*sin(t*1.496) - 33.56*cos(2*t*1.496) + 82.36*sin(2*t*1.496) - 38.04*cos(3*t*1.496) + b3z*sin(3*t*1.496) + a4z*cos(4*t*1.496) + b4z*sin(4*t*1.496) + a5z*cos(5*t*1.496) + b5z*sin(5*t*1.496) + a6z*cos(6*t*1.496) + b6z*sin(6*t*1.496) + a7z*cos(7*t*1.496) + b7z*sin(7*t*1.496) + a8z*cos(8*t*1.496) + b8z*sin(8*t*1.496);
+
+%elbow eqautions of motion
+xte =  a0xe + a1xe*cos(t*wxe) + b1xe*sin(t*wxe) + a2xe*cos(2*t*wxe) + b2xe*sin(2*t*wxe) + a3xe*cos(3*t*wxe) + b3xe*sin(3*t*wxe) + a4xe*cos(4*t*wxe) + b4xe*sin(4*t*wxe) + a5xe*cos(5*t*wxe) + b5xe*sin(5*t*wxe) + a6xe*cos(6*t*wxe) + b6xe*sin(6*t*wxe) + a7xe*cos(7*t*wxe) + b7xe*sin(7*t*wxe) + a8xe*cos(8*t*wxe) + b8xe*sin(8*t*wxe);
+yte =  a0ye + a1ye*cos(t*wye) + b1ye*sin(t*wye) + a2ye*cos(2*t*wye) + b2ye*sin(2*t*wye) + a3ye*cos(3*t*wye) + b3ye*sin(3*t*wye) + a4ye*cos(4*t*wye) + b4ye*sin(4*t*wye) + a5ye*cos(5*t*wye) + b5ye*sin(5*t*wye) + a6ye*cos(6*t*wye) + b6ye*sin(6*t*wye) + a7ye*cos(7*t*wye) + b7ye*sin(7*t*wye) + a8ye*cos(8*t*wye) + b8ye*sin(8*t*wye);
+zte =  a0ze + a1ze*cos(t*wze) + b1ze*sin(t*wze) + a2ze*cos(2*t*wze) + b2ze*sin(2*t*wze) + a3ze*cos(3*t*wze) + b3ze*sin(3*t*wze) + a4ze*cos(4*t*wze) + b4ze*sin(4*t*wze) + a5ze*cos(5*t*wze) + b5ze*sin(5*t*wze) + a6ze*cos(6*t*wze) + b6ze*sin(6*t*wze) + a7ze*cos(7*t*wze) + b7ze*sin(7*t*wze) + a8ze*cos(8*t*wze) + b8ze*sin(8*t*wze);
+
+%origin, this is the location of the shoulder joint aka base of where
+%motion starts
+Ox=92.518247572;
+Oy=305.148699736;
+Oz=27.556599226;
+
+%plot flipper tip path
+plot3(xt,yt,zt,'LineWidth',2)
+axis square
+axis equal
+grid on
+xlabel('x(t) (mm)')
+ylabel('y(t) (mm)')
+zlabel('z(t) (mm)')
+xlim([-150 350])
+ylim([-50 700])
+zlim([0 400])
+hold on
+
+%plot elbow path
+plot3(xte,yte,zte,'LineWidth',2)
+axis square
+axis equal
+grid on
+xlabel('x(t) (mm)')
+ylabel('y(t) (mm)')
+zlabel('z(t) (mm)')
+title('turtle motion')
+
+%create point
+[sX,sY,sZ] = sphere(10);
+r=10;
+surf(sX*r+Ox,sY*r+Oy,sZ*r+Oz,'FaceColor',[0.4660 0.6740 0.1880]);
+
+%run flipper animation
+loops=1
+timedelay=time/fidelity;
+for loop=1:loops
+
+for s=1:length(xt)
+  p2=plot3([xt(s) xte(s)],[yt(s) yte(s)],[zt(s) zte(s)],'g','LineWidth',5);  
+  p1=plot3([Ox xte(s)],[Oy yte(s)],[Oz zte(s)],'g','LineWidth',5);
+  h1=surf(sX*r+xt(s),sY*r+yt(s),sZ*r+zt(s),'FaceColor',[0.4660 0.6740 0.1880]);
+  h2=surf(sX*r+xte(s),sY*r+yte(s),sZ*r+zte(s),'FaceColor',[0.4660 0.6740 0.1880]);
+  xlim([-150 350]);
+  ylim([-50 700]);
+  zlim([0 400]);
+  pause(timedelay);
+  delete(p1);
+  delete(p2);
+  delete(h1);
+  delete(h2);  
+end
+end
