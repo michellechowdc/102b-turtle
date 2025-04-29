@@ -29,6 +29,8 @@ float a = 80.0;   // major axis (pitch direction)
 float b = 25.0;   // minor axis (yaw direction)
 float c = 20.0;   // vertical depth arc to create the "C" shape
 
+int total_time = 0; // total time needed for the path
+
 ////////////////////////////////////
 ////// SETUP BACK FLIPPERS /////////
 const int bR_yawPin = 26; // might not be the actual order
@@ -150,7 +152,6 @@ void handleButtonState(int buttonState) {
       Serial.println("Button is pressed");
       // Handle joystick movement for yaw and pitch
       handleJoystickMovement(xMovement, yMovement, xValue, yValue); // service function
-      handleFrontFlipperMovement(); // turn on front flippers when joystick in forward position
       break;
 
     case HIGH:  // button not pressed
@@ -190,6 +191,13 @@ void handleJoystickMovement(int xMovement, int yMovement, int xValue, int yValue
       Serial.print("Pitch (phi): ");
       Serial.println(pitch);
     }
+
+    // Run handleFrontFlipperMovement() when joystick is moved up
+    Serial.println("Joystick moved up, running handleFrontFlipperMovement...");
+    handleFrontFlipperMovement();
+    
+    // Add a delay to ensure the function completes before checking joystick again
+    delay(total_time);
   }
 }
 
@@ -269,5 +277,11 @@ void generatePath() {
     float yawRad = atan2(x, r_pitch);
     float yawDeg = degrees(yawRad);
     yawAngles[i] = constrain(yawDeg + 90.0, 0.0, 180.0);
+
+    // Compute total time for the path
+    float easingFactor = sin(i * PI / steps); // 0 at start/end, 1 at middle
+    int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay
+
+    total_time += delayTime; // accumulate the total time
   }
 }
