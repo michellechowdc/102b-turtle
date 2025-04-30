@@ -3,8 +3,16 @@ volatile bool buttonIsPressed = false;
 
 int state = 1;
 
+unsigned long lastDebounceTime = 0;
+const unsigned long debounceDelay = 50;  // 50 milliseconds
+
 void IRAM_ATTR btn_isr() {  // the function to be called when interrupt is triggered
-  buttonIsPressed = true;
+  unsigned long currentTime = millis();
+  // Check if enough time has passed since the last press
+  if ((currentTime - lastDebounceTime) > debounceDelay) {
+    buttonIsPressed = true;
+    lastDebounceTime = currentTime;
+  }
 }
 
 void setup() {

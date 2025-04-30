@@ -116,9 +116,9 @@ void loop() {
         L_yaw_servo.write(yawAngles[left_i]); // MIDDLE SERVO
 
         // clockwise looking from the right side
-        // right_i--;
-        // R_roll_servo.write(pitchAngles[right_i]); // physically is pitch but on mine is roll, BASE SERVO
-        // R_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
+        right_i--;
+        R_roll_servo.write(pitchAngles[right_i]); // physically is pitch but on mine is roll, BASE SERVO
+        R_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
 
         float easingFactor = sin(left_i * PI / steps); // 0 at start/end, 1 at middle
         int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay

@@ -54,7 +54,9 @@ Servo bL_rollServo;
 const int xPin = 12; 
 const int yPin = 15; 
 
-const int buttonPin = 37; 
+const int buttonPin = 13; 
+// int lastButtonState = false;
+volatile bool buttonIsPressed = false;
 
 const int deadZone = 100;  // joystick values within this range from middle will be ignored
 
@@ -82,6 +84,10 @@ void TimerInterruptInit() {
   timer = timerBegin(1000000); // 1 MHz
   timerAttachInterrupt(timer, &timerISR); 
   timerAlarm(timer, 1000000, true, 0);
+}
+
+void IRAM_ATTR btn_isr() {  // the function to be called when interrupt is triggered
+  buttonIsPressed = true;
 }
 
 void setup() {
@@ -117,7 +123,8 @@ void setup() {
   bL_rollServo.setPeriodHertz(50);
   bL_rollServo.attach(bL_rollPin);
 
-  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(buttonPin, INPUT);
+  attachInterrupt(buttonPin, btn_isr, FALLING);
 
   Serial.println("Enter yaw (theta), pitch (phi), and roll degrees (0-180) in format: yaw pitch roll");
 
@@ -139,8 +146,12 @@ void loop() {
     yMovement = abs(yValue - 3100) > deadZone ? 1 : 0;
 
     // button state (0 pressed, 1 released)
-    int buttonState = digitalRead(buttonPin); // event checker
-    handleButtonState(buttonState); // service function
+    // int buttonState = digitalRead(buttonPin); // event checker
+    // if (buttonState != lastButtonState) {
+    //   lastButtonState = buttonState;
+    // }
+
+    handleButtonState(event_ButtonPressed()); // service function
   }
 }
 
@@ -161,6 +172,14 @@ void handleButtonState(int buttonState) {
   }
 }
 
+bool event_ButtonPressed() {
+  if (buttonIsPressed == true) {
+    buttonIsPressed = false;
+    return true;
+  } else {
+    return false;
+  }
+}
 // int checkJoystickMovement(int joystickValue) { // event checker
 //   Serial.println("In checkJoystickMovement");
 //   return abs(joystickValue - 3000) > deadZone ? 1 : 0;
@@ -168,6 +187,10 @@ void handleButtonState(int buttonState) {
 
 void handleJoystickMovement(int xMovement, int yMovement, int xValue, int yValue) { // service function
   Serial.println("In handleJoystickMovement service function");
+  Serial.println("Joystick x: ");
+  Serial.print(xValue);
+  Serial.print(", y: ");
+  Serial.print(yValue);
 
   if (xMovement == 1) {
     yaw = map(xValue, 0, 4095, 0, 180);
@@ -248,8 +271,8 @@ void handleFrontFlipperMovement() {
 
     // clockwise looking from the right side
     right_i--;
-    R_roll_servo.write(pitchAngles[right_i]); // physically is pitch but on mine is roll, BASE SERVO
-    R_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
+    // R_roll_servo.write(pitchAngles[right_i]); // physically is pitch but on mine is roll, BASE SERVO
+    // R_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
 
     float easingFactor = sin(left_i * PI / steps); // 0 at start/end, 1 at middle
     int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay
