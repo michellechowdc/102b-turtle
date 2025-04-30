@@ -31,8 +31,26 @@ float c = 20.0;   // vertical depth arc to create the "C" shape
 
 int total_time = 0; // total time needed for the path
 
+////////////////////////////////////
+////// SETUP BACK FLIPPERS /////////
+const int bR_yawPin = 26; // might not be the actual order
+const int bR_pitchPin = 25;
+const int bR_rollPin = 34;
+
+Servo bR_yawServo;
+Servo bR_pitchServo;
+Servo bR_rollServo;
+
+const int bL_yawPin = 39;
+const int bL_pitchPin = 36;
+const int bL_rollPin = 4;
+
+Servo bL_yawServo;
+Servo bL_pitchServo;
+Servo bL_rollServo;
+
 ///////////////// program state
-int state = 2;
+int state = 1;
 
 ///////////////// joystick code
 const int xPin = 12;
@@ -58,10 +76,11 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
 
+  //// button setup
   pinMode(buttonPin, INPUT);  // configures the specified pin to behave either as an input or an output
   attachInterrupt(buttonPin, btn_isr, FALLING);
 
-  // front flippers
+  ///// front flippers
   R_roll_servo.attach(R_ROLL_PIN);
   R_yaw_servo.attach(R_YAW_PIN);
   // R_pitch_servo.attach(R_PITCH_PIN);
@@ -69,6 +88,25 @@ void setup() {
   L_roll_servo.attach(L_ROLL_PIN);
   L_yaw_servo.attach(L_YAW_PIN);
   // L_pitch_servo.attach(L_PITCH_PIN);
+
+  ///// back flippers
+  bR_yawServo.setPeriodHertz(50);  
+  bR_yawServo.attach(bR_yawPin);
+
+  bR_pitchServo.setPeriodHertz(50);
+  bR_pitchServo.attach(bR_pitchPin);
+
+  bR_rollServo.setPeriodHertz(50);
+  bR_rollServo.attach(bR_rollPin);
+
+  bL_yawServo.setPeriodHertz(50);  
+  bL_yawServo.attach(bL_yawPin);
+
+  bL_pitchServo.setPeriodHertz(50);
+  bL_pitchServo.attach(bL_pitchPin);
+
+  bL_rollServo.setPeriodHertz(50);
+  bL_rollServo.attach(bL_rollPin);
 
   generatePath(); // Generate the path for the servos
 }
@@ -91,10 +129,10 @@ void loop() {
 
       break;
     case 2: // Turtle On
-      // if (event_ButtonPressed()) {
-      //   state = 1;
-      // } else 
-      if (yVal < 3110) {
+      if (event_ButtonPressed()) {
+        state = 1;
+      } else 
+      if (event_moveForward(yVal)) {
         state = 3;
       } else {
         Serial.println("Turtle On (Button Pressed)");
@@ -104,11 +142,11 @@ void loop() {
     case 3: // Move Forward
       if (event_ButtonPressed()) {
         state = 1;
-      } else if (yVal >= 3110) {
+      } else if (!event_moveForward(yVal)) {
         state = 2;
-      } else if (xVal > 3250) {
+      } else if (event_moveRight(xVal)) {
         state = 4;
-      } else if (xVal < 3230) {
+      } else if (event_moveLeft(xVal)) {
         state = 5;
       } else {
         Serial.println("Move Forward");
@@ -120,7 +158,7 @@ void loop() {
     case 4: // Move Right
       if (event_ButtonPressed()) {
         state = 1;
-      } else if (xVal <= 3250) {
+      } else if (!event_moveRight(xVal)) {
         state = 3;
       } else {
         Serial.println("Move Right");
@@ -132,7 +170,7 @@ void loop() {
     case 5: // Move Left
       if (event_ButtonPressed()) {
         state = 1;
-      } else if (xVal >= 3230) {
+      } else if (!event_moveLeft(xVal)) {
         state = 3;
       } else {
         Serial.println("Move Left");
@@ -151,6 +189,24 @@ bool event_ButtonPressed() {
   } else {
     return false;
   }
+}
+
+bool event_moveForward(int yVal) {
+  // y threshold is 3110
+  // y ranges from 0 to 4095, center is 3115
+  return (yVal < 3110);
+}
+
+bool event_moveRight(int xVal) {
+  // x threshold is 3250
+  // x ranges from 0 to 4095, center is 3230
+  return (xVal > 3250);
+}
+
+bool event_moveLeft(int xVal) {
+  // x threshold is 3230
+  // x ranges from 0 to 4095, center is 3230
+  return (xVal < 3230);
 }
 
 void service_frontForward() {
@@ -177,15 +233,38 @@ void service_frontForward() {
 
 void service_backNeutral() {
   Serial.println("Moving Neutral");
+  bL_yawServo.write(0);
+  bL_pitchServo.write(0);
+  bL_rollServo.write(0);
 }
 
 void service_backRight() {
   Serial.println("Moving Right");
+  bL_yawServo.write(90);
+  bL_pitchServo.write(0);
+  bL_rollServo.write(180);
 }
 
 void service_backLeft() {
   Serial.println("Moving Left");
+  bL_yawServo.write(90);
+  bL_pitchServo.write(90);
+  bL_rollServo.write(0);
 }
+
+// move to Ashley's Ballast code
+// void service_backUp() {
+//   Serial.println("Moving Up");
+//   yawServo.write(0);
+//   pitchServo.write(45);
+//   rollServo.write(90);
+// }
+
+// void service_backDown() {
+//   Serial.println("Moving Down");
+//   neutralBackFlipper();
+// }
+/////////
 
 void generatePath() {
   for (int i = 0; i < steps; i++) {
@@ -214,3 +293,46 @@ void generatePath() {
     total_time += delayTime; // accumulate the total time
   }
 }
+
+// adjusted
+// void generatePath() {
+//   for (int i = 0; i < steps; i++) {
+//     float linearT = (float)i / (steps - 1);              // Goes from 0 to 1
+//     float t = (1 - cos(linearT * PI)) / 2.0 * 2 * PI;    // Smooth cosine ramp [0, 2π]
+
+//     float z = a * cos(t);        // forward/backward (pitch)
+//     float x = b * sin(t);        // side to side (yaw)
+//     float y = c * sin(t / 2.0);  // height variation
+
+//     // Compute pitch and yaw
+//     float pitchRad = atan2(y, z);
+//     float pitchDeg = degrees(pitchRad);
+//     pitchDeg = constrain(pitchDeg, 0.0, 180.0);
+
+//     float r_pitch = sqrt(y * y + z * z);
+//     float yawRad = atan2(x, r_pitch);
+//     float yawDeg = degrees(yawRad);
+//     yawDeg = constrain(yawDeg + 90.0, 0.0, 180.0);
+
+//     // Smooth blend to fixed start and end values (ease-in-out curve)
+//     float blendT = (1 - cos(linearT * PI)) / 2.0;  // 0 at start, 1 at end, smooth
+//     float inverseBlend = 1.0 - blendT;
+
+//     // Fixed start/end constraints
+//     float startPitch = 45.0;
+//     float startYaw = 180.0;
+
+//     // Blend pitch and yaw toward start/end values at the endpoints
+//     pitchDeg = inverseBlend * startPitch + blendT * pitchDeg;
+//     yawDeg = inverseBlend * startYaw + blendT * yawDeg;
+
+//     pitchAngles[i] = pitchDeg;
+//     yawAngles[i] = yawDeg;
+
+//     // Compute delay for smooth movement
+//     float easingFactor = sin(i * PI / steps); // 0 at start/end, 1 at middle
+//     int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay
+
+//     total_time += delayTime;
+//   }
+// }
