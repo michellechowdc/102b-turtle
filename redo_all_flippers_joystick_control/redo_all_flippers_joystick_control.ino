@@ -90,23 +90,23 @@ void setup() {
   // L_pitch_servo.attach(L_PITCH_PIN);
 
   ///// back flippers
-  bR_yawServo.setPeriodHertz(50);  
-  bR_yawServo.attach(bR_yawPin);
+  // bR_yawServo.setPeriodHertz(50);  
+  // bR_yawServo.attach(bR_yawPin);
 
-  bR_pitchServo.setPeriodHertz(50);
-  bR_pitchServo.attach(bR_pitchPin);
+  // bR_pitchServo.setPeriodHertz(50);
+  // bR_pitchServo.attach(bR_pitchPin);
 
-  bR_rollServo.setPeriodHertz(50);
-  bR_rollServo.attach(bR_rollPin);
+  // bR_rollServo.setPeriodHertz(50);
+  // bR_rollServo.attach(bR_rollPin);
 
-  bL_yawServo.setPeriodHertz(50);  
-  bL_yawServo.attach(bL_yawPin);
+  // bL_yawServo.setPeriodHertz(50);  
+  // bL_yawServo.attach(bL_yawPin);
 
-  bL_pitchServo.setPeriodHertz(50);
-  bL_pitchServo.attach(bL_pitchPin);
+  // bL_pitchServo.setPeriodHertz(50);
+  // bL_pitchServo.attach(bL_pitchPin);
 
-  bL_rollServo.setPeriodHertz(50);
-  bL_rollServo.attach(bL_rollPin);
+  // bL_rollServo.setPeriodHertz(50);
+  // bL_rollServo.attach(bL_rollPin);
 
   generatePath(); // Generate the path for the servos
 }
@@ -220,8 +220,8 @@ void service_frontForward() {
 
     // clockwise looking from the right side
     right_i--;
-    // R_roll_servo.write(pitchAngles[right_i]); // physically is pitch but on mine is roll, BASE SERVO
-    // R_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
+    R_roll_servo.write(pitchAngles[right_i]); // physically is pitch but on mine is roll, BASE SERVO
+    R_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
 
     float easingFactor = sin(left_i * PI / steps); // 0 at start/end, 1 at middle
     int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay
@@ -233,23 +233,23 @@ void service_frontForward() {
 
 void service_backNeutral() {
   Serial.println("Moving Neutral");
-  bL_yawServo.write(0);
-  bL_pitchServo.write(0);
-  bL_rollServo.write(0);
+  // bL_yawServo.write(0);
+  // bL_pitchServo.write(0);
+  // bL_rollServo.write(0);
 }
 
 void service_backRight() {
   Serial.println("Moving Right");
-  bL_yawServo.write(90);
-  bL_pitchServo.write(0);
-  bL_rollServo.write(180);
+  // bL_yawServo.write(90);
+  // bL_pitchServo.write(0);
+  // bL_rollServo.write(180);
 }
 
 void service_backLeft() {
   Serial.println("Moving Left");
-  bL_yawServo.write(90);
-  bL_pitchServo.write(90);
-  bL_rollServo.write(0);
+  // bL_yawServo.write(90);
+  // bL_pitchServo.write(90);
+  // bL_rollServo.write(0);
 }
 
 // move to Ashley's Ballast code
