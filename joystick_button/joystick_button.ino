@@ -1,5 +1,5 @@
-const int buttonPin = 12; 
-volatile bool buttonIsPressed = false;
+const int buttonPin = 27; 
+volatile bool buttonIsPressed = false; 
 
 int state = 1;
 
