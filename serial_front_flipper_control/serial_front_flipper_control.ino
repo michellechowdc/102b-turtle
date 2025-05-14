@@ -1,15 +1,15 @@
 #include <ESP32Servo.h>
 
 Servo servo1, servo2, servo3;
-const int pin1 = 14;
-const int pin2 = 32;
+const int pin1 = 25;
+const int pin2 = 26;
 // const int pin3 = 11;
 
 String inputString = "";
 bool inputComplete = false;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   servo1.attach(pin1);
   servo2.attach(pin2);
   // servo3.attach(pin3);

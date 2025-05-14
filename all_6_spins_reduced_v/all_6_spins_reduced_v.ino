@@ -38,38 +38,38 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   R_roll_servo.write(0); // move MG996R's shaft to angle 0°
-  R_yaw_servo.write(0);
+  // R_yaw_servo.write(0);
   L_roll_servo.write(0);
-  L_yaw_servo.write(0);
-  L_back_servo.write(0);
-  R_back_servo.write(0);
+  // L_yaw_servo.write(0);
+  // L_back_servo.write(0);
+  // R_back_servo.write(0);
   delay(1000); // wait for one second
   R_roll_servo.write(45); // move MG996R's shaft to angle 45°
-  R_yaw_servo.write(45);
+  // R_yaw_servo.write(45);
   L_roll_servo.write(45);
-  L_yaw_servo.write(45);
-  L_back_servo.write(45);
-  R_back_servo.write(45);
+  // L_yaw_servo.write(45);
+  // L_back_servo.write(45);
+  // R_back_servo.write(45);
   delay(1000); // wait for one second 
   R_roll_servo.write(90); // move MG996R's shaft to angle 90°
-  R_yaw_servo.write(90);
+  // R_yaw_servo.write(90);
   L_roll_servo.write(90);
-  L_yaw_servo.write(90);
-  L_back_servo.write(90);
-  R_back_servo.write(90);
+  // L_yaw_servo.write(90);
+  // L_back_servo.write(90);
+  // R_back_servo.write(90);
   delay(1000); // wait for one second
-  R_roll_servo.write(135); // move MG996R's  shaft to angle 135°
-  R_yaw_servo.write(135);
-  L_roll_servo.write(135);
-  L_yaw_servo.write(135);
-  L_back_servo.write(135);
-  R_back_servo.write(135);
+  // R_roll_servo.write(135); // move MG996R's  shaft to angle 135°
+  // R_yaw_servo.write(135);
+  // L_roll_servo.write(135);
+  // L_yaw_servo.write(135);
+  // L_back_servo.write(135);
+  // R_back_servo.write(135);
   delay(1000); // wait for one second
-  R_roll_servo.write(180); // move MG996R's shaft to angle 180°
-  R_yaw_servo.write(180);
-  L_roll_servo.write(180);
-  L_yaw_servo.write(180);
-  L_back_servo.write(180);
-  R_back_servo.write(180);
+  // R_roll_servo.write(180); // move MG996R's shaft to angle 180°
+  // R_yaw_servo.write(180);
+  // L_roll_servo.write(180);
+  // L_yaw_servo.write(180);
+  // L_back_servo.write(180);
+  // R_back_servo.write(180);
   delay(1000); // wait for one second
 }

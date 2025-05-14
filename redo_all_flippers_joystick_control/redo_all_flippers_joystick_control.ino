@@ -36,7 +36,7 @@ const int bL_rollPin = 5;
 Servo bL_rollServo;
 
 ///////////////// program state
-int state = 1;
+int state = 2;
 
 ///////////////// joystick code
 const int xPin = 13;
@@ -114,10 +114,10 @@ void loop() {
       break;
     case 2: // Turtle On
 
-      if (event_ButtonPressed()) {
-        service_LEDoff();
-        state = 1;
-      } else 
+      // if (event_ButtonPressed()) {
+      //   service_LEDoff();
+      //   state = 1;
+      // } else 
       if (event_moveForward(yVal)) {
         service_LEDoff();
         state = 3;
@@ -127,10 +127,11 @@ void loop() {
 
       break;
     case 3: // Move Forward
-      if (event_ButtonPressed()) {
-        service_LEDoff();
-        state = 1;
-      } else if (!event_moveForward(yVal)) {
+      // if (event_ButtonPressed()) {
+      //   service_LEDoff();
+      //   state = 1;
+      // } else 
+      if (!event_moveForward(yVal)) {
         service_LEDon();
         state = 2;
       } else if (event_moveRight(xVal)) {
@@ -146,10 +147,11 @@ void loop() {
 
       break;
     case 4: // Move Right
-      if (event_ButtonPressed()) {
-        service_LEDoff();
-        state = 1;
-      } else if (!event_moveRight(xVal)) {
+      // if (event_ButtonPressed()) {
+      //   service_LEDoff();
+      //   state = 1;
+      // } else 
+      if (!event_moveRight(xVal)) {
         service_LEDon();
         state = 3;
       } else {
@@ -160,10 +162,11 @@ void loop() {
 
       break;
     case 5: // Move Left
-      if (event_ButtonPressed()) {
-        service_LEDoff();
-        state = 1;
-      } else if (!event_moveLeft(xVal)) {
+      // if (event_ButtonPressed()) {
+      //   service_LEDoff();
+      //   state = 1;
+      // } else 
+      if (!event_moveLeft(xVal)) {
         service_LEDon();
         state = 3;
       } else {
@@ -214,17 +217,21 @@ void service_frontForward() {
   for (int left_i = 0; left_i < steps; left_i++) {
     // counterclockwise looking from the left side
     L_roll_servo.write(pitchAngles[left_i]); // physically is pitch but on mine is roll, BASE SERVO
-    L_yaw_servo.write(yawAngles[left_i]); // MIDDLE SERVO
+    L_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
 
     // clockwise looking from the right side
     right_i--;
     R_roll_servo.write(pitchAngles[right_i]); // physically is pitch but on mine is roll, BASE SERVO
-    R_yaw_servo.write(yawAngles[right_i]); // MIDDLE SERVO
+    R_yaw_servo.write(yawAngles[left_i]); // MIDDLE SERVO
 
-    float easingFactor = sin(left_i * PI / steps); // 0 at start/end, 1 at middle
-    int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay
+    // R_roll_servo.write(pitchAngles[left_i]); // physically is pitch but on mine is roll, BASE SERVO
+    // R_yaw_servo.write(yawAngles[left_i]); // MIDDLE SERVO
 
-    delay(delayTime);
+    // float easingFactor = sin(left_i * PI / steps); // 0 at start/end, 1 at middle
+    // int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay
+
+    // delay(delayTime);
+    delay(10);
   }
 
 }
@@ -237,14 +244,14 @@ void service_backNeutral() {
 
 void service_backRight() {
   Serial.println("Moving Right");
-  bL_rollServo.write(180);
-  bR_rollServo.write(180);
+  bL_rollServo.write(90);
+  bR_rollServo.write(130);
 }
 
 void service_backLeft() {
   Serial.println("Moving Left");
-  bL_rollServo.write(0);
-  bR_rollServo.write(0);
+  bL_rollServo.write(60);
+  bR_rollServo.write(90);
 }
 
 void service_blink() {
@@ -289,6 +296,7 @@ void service_LEDon() {
 // }
 /////////
 
+///////////// swim stroke
 void generatePath() {
   for (int i = 0; i < steps; i++) {
     float linearT = (float)i / (steps - 1);           // Goes from 0 to 1
@@ -316,6 +324,67 @@ void generatePath() {
     total_time += delayTime; // accumulate the total time
   }
 }
+
+///////////// walking path
+// manually program a path
+// void generatePath() {
+//   for (int i = 0; i < steps; i++) {
+//     // for pitch angles, first 100 at 130deg then 150deg
+//     if (i < 100) {
+//       pitchAngles[i] = 130.0;
+//     } else {
+//       pitchAngles[i] = 150.0;
+//     }
+
+//     // for yaw angles, evenly increment from 150 to 0deg in first 100 steps
+//     // then decrement from 0 to 150deg in next 100
+//     float increment = 150 / 100;
+//     if (i == 0) {
+//       yawAngles[0] = 150;
+//     } else if (i < 100) {
+//       yawAngles[i] = yawAngles[i - 1] - increment;
+//     } else {
+//       yawAngles[i] = yawAngles[i - 1] + increment;
+//     }
+//   }
+// }
+
+///////////// walking path
+// void generatePath() {
+//   for (int i = 0; i < steps; i++) {
+//     float linearT = (float)i / (steps - 1);           // Goes from 0 to 1
+//     float t = (1 - cos(linearT * PI)) / 2.0;          // Smooth cosine ramp [0,1]
+
+//     // CONTROLLED "C" PATH IN SIDE VIEW:
+//     float z = -a * cos(t * PI);       // forward-backward (pitch)
+//     float y = c * sin(t * PI);        // up-down (lift)
+
+//     // TEARDROP-SHAPED PATH IN TOP VIEW:
+//     // outward during lift, back along side during power
+//     float x;
+//     if (t < 0.5) {
+//       x = b * sin(t * 2 * PI);        // lift phase: go outward
+//     } else {
+//       x = b * (1 - 2 * (t - 0.5));    // return phase: gradually come inward
+//     }
+
+//     // Compute pitch angle
+//     float pitchRad = atan2(y, z);
+//     float pitchDeg = degrees(pitchRad);
+//     pitchAngles[i] = constrain(pitchDeg, 0.0, 180.0);
+
+//     // Compute yaw angle
+//     float r_pitch = sqrt(y * y + z * z);
+//     float yawRad = atan2(x, r_pitch);
+//     float yawDeg = degrees(yawRad);
+//     yawAngles[i] = constrain(yawDeg + 90.0, 0.0, 180.0);  // 90° is forward
+
+//     // Compute timing
+//     float easingFactor = sin(i * PI / steps); // 0 at ends, 1 at middle
+//     int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms
+//     total_time += delayTime;
+//   }
+// }
 
 // adjusted
 // void generatePath() {
