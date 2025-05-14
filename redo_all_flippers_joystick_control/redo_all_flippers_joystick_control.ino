@@ -1,7 +1,5 @@
 #include <ESP32Servo.h>
 
-// replace end servos for joystick pins for now
-
 ////////////////////////////////////
 ////// SETUP FRONT FLIPPERS ////////
 Servo R_roll_servo; // object representing actual servo
@@ -50,7 +48,6 @@ volatile bool buttonIsPressed = false;
 const int redLEDPin = 33;
 const int yelLEDPin = 15;
 volatile bool LEDon = false;
-// volatile bool i = false;
 
 unsigned long lastDebounceTime = 0;
 const unsigned long debounceDelay = 50;  // 50 milliseconds
@@ -65,11 +62,10 @@ void IRAM_ATTR btn_isr() {  // the function to be called when interrupt is trigg
 }
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(115200);
 
   //// button setup
-  pinMode(buttonPin, INPUT);  // configures the specified pin to behave either as an input or an output
+  pinMode(buttonPin, INPUT);
   attachInterrupt(buttonPin, btn_isr, FALLING);
 
   ///// front flippers
@@ -91,7 +87,6 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   delay(100);
 
   // read joystick values
@@ -100,9 +95,6 @@ void loop() {
 
   switch(state) {
     case 1: // Turtle Off
-      // service_blink();
-      // LEDon = blink_check();
-      
       if (event_ButtonPressed()) {
         digitalWrite(redLEDPin, HIGH);
         digitalWrite(yelLEDPin, HIGH);
@@ -113,7 +105,6 @@ void loop() {
 
       break;
     case 2: // Turtle On
-
       if (event_ButtonPressed()) {
         service_LEDoff();
         state = 1;
@@ -186,13 +177,12 @@ bool event_ButtonPressed() {
 }
 
 bool event_moveForward(int yVal) {
-  // y threshold is 3110
+  // y threshold is 3010
   // y ranges from 0 to 4095, center is 3115
   return (yVal < 3010);
 }
 
 bool event_moveRight(int xVal) {
-  // x threshold is 3250
   // x ranges from 0 to 4095, center is 3230
   digitalWrite(yelLEDPin, HIGH);
   digitalWrite(redLEDPin, LOW);
@@ -200,7 +190,6 @@ bool event_moveRight(int xVal) {
 }
 
 bool event_moveLeft(int xVal) {
-  // x threshold is 3230
   // x ranges from 0 to 4095, center is 3230
   digitalWrite(redLEDPin, HIGH);
   digitalWrite(yelLEDPin, LOW);
@@ -247,47 +236,15 @@ void service_backLeft() {
   bR_rollServo.write(0);
 }
 
-void service_blink() {
-  digitalWrite(redLEDPin, HIGH);  // turn the LED on (HIGH is the voltage level)
-  digitalWrite(yelLEDPin, HIGH);   // turn the LED off by making the voltage LOW
-  delay(50);                      // wait for a second
-  digitalWrite(redLEDPin, LOW);   // turn the LED off by making the voltage LOW
-  digitalWrite(yelLEDPin, LOW);  // turn the LED on (HIGH is the voltage level)
-  delay(50);                      // wait for a second
-}
-
-bool blink_check() {
-  if (LEDon == true) {
-    LEDon = false;
-    return true;
-  } else {
-    return false;
-  }
-}
-
 void service_LEDoff() {
-  digitalWrite(redLEDPin, LOW);   // turn the LED off by making the voltage LOW
-  digitalWrite(yelLEDPin, LOW);  // turn the LED on (HIGH is the voltage level)
+  digitalWrite(redLEDPin, LOW);
+  digitalWrite(yelLEDPin, LOW);
 }
 
 void service_LEDon() {
-  digitalWrite(redLEDPin, HIGH);   // turn the LED off by making the voltage LOW
-  digitalWrite(yelLEDPin, HIGH);  // turn the LED on (HIGH is the voltage level)
+  digitalWrite(redLEDPin, HIGH);
+  digitalWrite(yelLEDPin, HIGH);
 }
-
-// move to Ashley's Ballast code
-// void service_backUp() {
-//   Serial.println("Moving Up");
-//   yawServo.write(0);
-//   pitchServo.write(45);
-//   rollServo.write(90);
-// }
-
-// void service_backDown() {
-//   Serial.println("Moving Down");
-//   neutralBackFlipper();
-// }
-/////////
 
 void generatePath() {
   for (int i = 0; i < steps; i++) {
@@ -316,46 +273,3 @@ void generatePath() {
     total_time += delayTime; // accumulate the total time
   }
 }
-
-// adjusted
-// void generatePath() {
-//   for (int i = 0; i < steps; i++) {
-//     float linearT = (float)i / (steps - 1);              // Goes from 0 to 1
-//     float t = (1 - cos(linearT * PI)) / 2.0 * 2 * PI;    // Smooth cosine ramp [0, 2π]
-
-//     float z = a * cos(t);        // forward/backward (pitch)
-//     float x = b * sin(t);        // side to side (yaw)
-//     float y = c * sin(t / 2.0);  // height variation
-
-//     // Compute pitch and yaw
-//     float pitchRad = atan2(y, z);
-//     float pitchDeg = degrees(pitchRad);
-//     pitchDeg = constrain(pitchDeg, 0.0, 180.0);
-
-//     float r_pitch = sqrt(y * y + z * z);
-//     float yawRad = atan2(x, r_pitch);
-//     float yawDeg = degrees(yawRad);
-//     yawDeg = constrain(yawDeg + 90.0, 0.0, 180.0);
-
-//     // Smooth blend to fixed start and end values (ease-in-out curve)
-//     float blendT = (1 - cos(linearT * PI)) / 2.0;  // 0 at start, 1 at end, smooth
-//     float inverseBlend = 1.0 - blendT;
-
-//     // Fixed start/end constraints
-//     float startPitch = 45.0;
-//     float startYaw = 180.0;
-
-//     // Blend pitch and yaw toward start/end values at the endpoints
-//     pitchDeg = inverseBlend * startPitch + blendT * pitchDeg;
-//     yawDeg = inverseBlend * startYaw + blendT * yawDeg;
-
-//     pitchAngles[i] = pitchDeg;
-//     yawAngles[i] = yawDeg;
-
-//     // Compute delay for smooth movement
-//     float easingFactor = sin(i * PI / steps); // 0 at start/end, 1 at middle
-//     int delayTime = 10 + (int)(10 * (1 - easingFactor)); // 10–20 ms delay
-
-//     total_time += delayTime;
-//   }
-// }
